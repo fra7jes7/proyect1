@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/templates/MSTemplate.xhtml">
+	<ui:define name="tituloPagina">Asignación de Horarios</ui:define>
+	<ui:define name="contenido">
+		<p:growl autoUpdate="true"></p:growl>
+		<h:form id="frm">
+			<p:growl showDetail="true" sticky="true" autoUpdate="true" />
+			<p></p>
+
+
+			<p></p>
+			<h:outputLabel value="Adjuntar Archivo Excel (version: 97-2003)  " />
+			<h:outputLabel value="(formato .xls)" />
+
+			<p:fileUpload
+				fileUploadListener="#{controladorPrueba.subirArchivos}"
+				label="Seleccionar" uploadLabel="Adjuntar" cancelLabel="Cancelar"
+				mode="advanced" dragDropSupport="true" update="@this" fileLimit="1"
+				allowTypes="/(\.|\/)(xls)$/" process="@this">
+			</p:fileUpload>
+			
+			<p:commandButton value="procesar" action="#{controladorPrueba.leerExcelCompras}"></p:commandButton>
+			
+			<p:dataTable id="tblPlanMcu" var="var"
+					value="#{controladorPrueba.lstent}"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+					paginator="true" rows="20"
+					style="font-family:Verdana; font-size: 12px;" scrollable="true"
+					scrollWidth="1200">
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Cod" />
+						</f:facet>
+						<h:outputText value="#{var.campo1.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Nom" />
+						</f:facet>
+						<h:outputText value="#{var.campo2.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="talla1" />
+						</f:facet>
+						<h:outputText value="#{var.campo3.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="talla2" />
+						</f:facet>
+						<h:outputText value="#{var.campo4.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="TALLA3" />
+						</f:facet>
+						<h:outputText value="#{var.campo5.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="TALLA3" />
+						</f:facet>
+						<h:outputText value="#{var.campo6.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="TALLA3" />
+						</f:facet>
+						<h:outputText value="#{var.campo7.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="TALLA3" />
+						</f:facet>
+						<h:outputText value="#{var.campo8.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="TALLA3" />
+						</f:facet>
+						<h:outputText value="#{var.campo9.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="TALLA3" />
+						</f:facet>
+						<h:outputText value="#{var.campo10.trim()}" />
+					</p:column>
+				</p:dataTable>
+			
+		</h:form>
+
+	</ui:define>
+</ui:composition>
+</html>
