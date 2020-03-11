@@ -1,0 +1,34 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/templates/MSTemplate.xhtml">
+	<ui:define name="contenido">
+		<ui:define name="tituloPagina">Login</ui:define>
+		<h:form id="formulario">
+			<p:growl showDetail="true" sticky="true" autoUpdate="true" />
+			<h:panelGrid columns="2" id="panel">
+				<p:row></p:row>
+				<h:outputText value="Usuario" />
+				<p:row></p:row>
+				<p:inputText required="true" value="#{controladorLogin.cedula}"></p:inputText>
+				<p:row></p:row> 
+				<h:outputText value="Contraseña" />
+				<p:row></p:row>
+				<p:password required="true" value="#{controladorLogin.clave}"></p:password>
+				<p:row></p:row>
+				<p:commandButton ajax="false" value="Ingresar"
+					action="#{controladorLogin.validar()}" update=":formulario:panel" >
+				</p:commandButton>
+			</h:panelGrid>
+
+
+		</h:form>
+	</ui:define>
+	<ui:define name="tituloFormulario">Login</ui:define>
+	<ui:define name="autor"></ui:define>
+</ui:composition>
+</html>

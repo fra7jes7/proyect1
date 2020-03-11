@@ -1,0 +1,2175 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/templates/MSTemplate.xhtml">
+	<ui:define name="tituloPagina">Plantillas</ui:define>
+	<ui:define name="contenido">
+		<p:ajaxStatus
+			style="width:64px;height:64px;position:fixed;right:5px;bottom:5px">
+			<f:facet name="start">
+				<p:graphicImage value="/imagenes/ajax-loadercircle.gif" />
+			</f:facet>
+
+			<f:facet name="complete">
+				<h:outputText value="" />
+			</f:facet>
+		</p:ajaxStatus>
+
+		<h:form id="frm">
+			<p:growl showDetail="true" sticky="true" autoUpdate="true" />
+			<p:menubar>
+				<p:menuitem value="Salir" url="./login.jsf" icon="ui-icon-power" />
+				<p:menuitem value="Generar Nueva Plantilla"
+					url="./DistribucionSeg.jsf" icon="ui-icon-arrowrefresh-1-s" />
+			</p:menubar>
+			<p></p>
+
+
+			<p></p>
+			<h:outputLabel value="Adjuntar Archivo Excel (version: 97-2003)  " />
+			<h:outputLabel value="(formato .xls)" />
+
+			<p:fileUpload
+				fileUploadListener="#{controladorPlantillaDist.subirArchivos}"
+				label="Seleccionar" uploadLabel="Adjuntar" cancelLabel="Cancelar"
+				mode="advanced" dragDropSupport="true" update="@this" fileLimit="1"
+				allowTypes="/(\.|\/)(xls)$/" process="frm:menu">
+			</p:fileUpload>
+
+			<h:panelGrid columns="2" cellpadding="3">
+				<h:outputLabel value="Seleccione la Plantilla a Transformar " />
+				<p:selectOneMenu id="menu"
+					value="#{controladorPlantillaDist.proceso}"
+					style="width:125px;font-family:Verdana; font-size: 10px;width:150px"
+					autoWidth="false">
+					<p:ajax
+						listener="#{controladorPlantillaDist.habilitarMenuConcepto}"
+						update="pConcepto,menuConcepto,pnlDistribucion,pnlCreacionOcaPar,panelPlantillaOca" />
+					<f:selectItem itemLabel="Seleccione" itemValue="0" />
+					<f:selectItem itemLabel="PLANTILLA DATOS BÁSICOS" itemValue="2" />
+					<f:selectItem itemLabel="ORDENAR PLANTILLA EOT" itemValue="1" />
+					<f:selectItem itemLabel="PLANTILLA DE DISTRIBUCIÓN SAP"
+						itemValue="3" />
+					<f:selectItem itemLabel="CREACIÓN DE PLANTILLA DE OCA"
+						itemValue="4" />
+					<f:selectItem
+						itemLabel="CREACIÓN DE PLANTILLA DE DISTRIBUCIÓN DE OCA"
+						itemValue="5" />
+					<f:selectItem itemLabel="CREACIÓN DE PLANTILLA OCI" itemValue="6" />
+					<f:selectItem
+						itemLabel="CREACIÓN DE PLANTILLA DE DISTRIBUCIÓN DE OCI"
+						itemValue="7" />
+					<f:selectItem itemLabel="CREACIÓN DE PLANTILLA OC INTERCOMPANY"
+						itemValue="8" />
+					<f:selectItem itemLabel="PLANTILLA DE AMPLIACIÓN" itemValue="10" />
+					<!-- 					<f:selectItem -->
+					<!-- 						itemLabel="CREACIÓN DE PLANTILLA DE DISTRIBUCIÓN DE OC INTERCOMPANY" -->
+					<!-- 						itemValue="0" /> -->
+					<f:selectItem itemLabel="PLANTILLA MCU" itemValue="11" />
+					<f:selectItem itemLabel="VALIDADORES DE CARGA MASIVA DE ARTICULOS"
+						itemValue="12" />
+					<f:selectItem itemLabel="VALIDACIÓN PRECIOS RETAIL PERU(VKP0 A073)"
+						itemValue="13" />
+					<f:selectItem
+						itemLabel="VALIDACIÓN PRECIOS RETAIL ECUADOR(VKP0 A071)"
+						itemValue="14" />
+					<f:selectItem itemLabel="VALIDACIÓN PRECIOS MAYORISTA (PR00 A073)"
+						itemValue="15" />
+					<f:selectItem
+						itemLabel="VALIDACIÓN PRECIOS MAYORISTA/INSTITUCIONAL (PR00 A949)"
+						itemValue="16" />
+					<f:selectItem
+						itemLabel="VALIDACIÓN PRECIOS INTERCOMPANY (ZPRE A946)"
+						itemValue="17" />
+					<f:selectItem
+						itemLabel="VALIDACIÓN DE LOS EANS"
+						itemValue="18" />
+				</p:selectOneMenu>
+			</h:panelGrid>
+
+			<p:panel header="Plantilla Oci" id="panelOpcionDistribucionOci"
+				style="border:0px;"
+				visible="#{controladorPlantillaDist.flagOpcionDistribucionOci}"
+				toggleable="true">
+				<h:outputLabel value="Adjuntar Archivo Excel (version: 97-2003)  " />
+				<h:outputLabel value="(formato .xls)" />
+				<p:fileUpload
+					fileUploadListener="#{controladorPlantillaDist.subirArchivos1}"
+					label="Seleccionar" uploadLabel="Adjuntar" cancelLabel="Cancelar"
+					mode="advanced" dragDropSupport="true" update="@this" fileLimit="1"
+					allowTypes="/(\.|\/)(csv|xls|xlsx)$/">
+				</p:fileUpload>
+				<p:commandButton value="Leer Excel"
+					actionListener="#{controladorPlantillaDist.leerArchivoPantillaOci}"
+					process="@this" update="@this" />
+			</p:panel>
+
+			<p:panel id="panelOpcionPlantOciParamOca" style="border:0px;"
+				header="Plantilla OCA"
+				visible="#{controladorPlantillaDist.flagOpcionPlantOciParamOca}"
+				toggleable="true">
+				<!-- 				ingresar la plantilla -->
+				<h:outputLabel value="Adjuntar Archivo Excel (version: 97-2003)  " />
+				<h:outputLabel value="(formato .xls)" />
+				<p:fileUpload
+					fileUploadListener="#{controladorPlantillaDist.subirArchivos1}"
+					label="Seleccionar" uploadLabel="Adjuntar" cancelLabel="Cancelar"
+					mode="advanced" dragDropSupport="true" update="@this" fileLimit="1"
+					allowTypes="/(\.|\/)(csv|xls|xlsx)$/">
+				</p:fileUpload>
+				<p:commandButton value="Leer Excel"
+					actionListener="#{controladorPlantillaDist.leerArchivoPantillaOcaParaProcesoPlantillaOci}"
+					process="@this" update="@this" />
+			</p:panel>
+
+			<p:panel header="Plantilla OC Intercompany"
+				id="panelOpcionDistribucionOcIntercompany" style="border:0px;"
+				visible="#{controladorPlantillaDist.flagParametrosDistribucionOcIntercompany}"
+				toggleable="true">
+				<h:outputLabel value="Adjuntar Archivo Excel (version: 97-2003)  " />
+				<h:outputLabel value="(formato .xls)" />
+				<p:fileUpload
+					fileUploadListener="#{controladorPlantillaDist.subirArchivos1}"
+					label="Seleccionar" uploadLabel="Adjuntar" cancelLabel="Cancelar"
+					mode="advanced" dragDropSupport="true" update="@this" fileLimit="1"
+					allowTypes="/(\.|\/)(csv|xls|xlsx)$/">
+				</p:fileUpload>
+				<p:commandButton value="Leer Excel"
+					actionListener="#{controladorPlantillaDist.leerArchivoPantillaOcIntercompany}"
+					process="@this" update="@this" />
+			</p:panel>
+
+			<p:panel id="panelOpcionDistribucionOciOpc" style="border:0px;"
+				visible="#{controladorPlantillaDist.flagOpcionDistribucionOciOpc}"
+				toggleable="true">
+				<h:panelGrid columns="2" cellpadding="3">
+					<h:outputLabel
+						value="Seleccione el tipo de plantilla de distribución oci" />
+					<p:selectOneMenu id="idOpcionDistribucionOci"
+						value="#{controladorPlantillaDist.varOpcionDistribucionOci}"
+						style="width:125px;font-family:Verdana; font-size: 10px;width:150px"
+						autoWidth="false">
+						<f:selectItem itemLabel="SELECCIONE" itemValue="0" />
+						<f:selectItem itemLabel="CON QUIEBRE DE FACTURA" itemValue="1" />
+						<f:selectItem itemLabel="SIMPLE" itemValue="2" />
+					</p:selectOneMenu>
+				</h:panelGrid>
+			</p:panel>
+
+			<p:panel id="panelOpcionPlantOci" style="border:0px;"
+				visible="#{controladorPlantillaDist.flagOpcionPlantOci}"
+				toggleable="true">
+				<h:panelGrid columns="2" cellpadding="3">
+					<h:outputLabel value="Seleccione el tipo de plantilla oci" />
+					<p:selectOneMenu id="idOpcionPlantOci"
+						value="#{controladorPlantillaDist.varOpcionPlantOci}"
+						style="width:125px;font-family:Verdana; font-size: 10px;width:150px"
+						autoWidth="false">
+						<f:selectItem itemLabel="SELECCIONE" itemValue="0" />
+						<f:selectItem itemLabel="CON QUIEBRE DE FACTURA" itemValue="1" />
+						<f:selectItem itemLabel="SIN QUIEBRE DE FACTURA" itemValue="2" />
+					</p:selectOneMenu>
+					<h:outputLabel value="Centro: " />
+					<p:inputText id="idCentroOci"
+						value="#{controladorPlantillaDist.centroOci}" />
+					<h:outputLabel value="Almacen: " />
+					<p:inputText id="idAlmacenOci"
+						value="#{controladorPlantillaDist.almacenOci}" />
+					<h:outputLabel value="Contrato: " />
+					<p:inputText id="idContratoOci"
+						value="#{controladorPlantillaDist.contratoOci}" />
+				</h:panelGrid>
+			</p:panel>
+
+			<p:panel header="Adjuntar plantilla oca" id="panelPlantillaOca"
+				visible="#{controladorPlantillaDist.flgDistribucionOca}"
+				toggleable="true">
+				<h:outputLabel value="Adjuntar Archivo Excel (version: 97-2003)  " />
+				<h:outputLabel value="(formato .xls)" />
+
+				<p:fileUpload
+					fileUploadListener="#{controladorPlantillaDist.subirArchivos1}"
+					label="Seleccionar" uploadLabel="Adjuntar" cancelLabel="Cancelar"
+					mode="advanced" dragDropSupport="true" update="@this" fileLimit="1"
+					allowTypes="/(\.|\/)(csv|xls|xlsx)$/">
+				</p:fileUpload>
+				<p:commandButton value="Leer Excel"
+					actionListener="#{controladorPlantillaDist.leerArchivoPantillaOca}"
+					process="@this" update="@this" />
+			</p:panel>
+
+			<p:panel id="pConcepto" style="border:0px;"
+				visible="#{controladorPlantillaDist.flagConcepto}" toggleable="true">
+				<h:panelGrid columns="3" cellpadding="1">
+					<h:outputLabel value="Seleccione el concepto " />
+					<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+					<p:selectOneMenu id="menuConcepto"
+						value="#{controladorPlantillaDist.varConcepto}"
+						style="width:125px;font-family:Verdana; font-size: 10px;width:150px"
+						autoWidth="false">
+						<f:selectItem itemLabel="SELECCIONE" itemValue="0" />
+						<f:selectItems
+							value="#{controladorPlantillaDist.lstConceptoOrdenar}" var="emp"
+							itemValue="#{emp}" itemLabel="#{emp}" />
+					</p:selectOneMenu>
+
+				</h:panelGrid>
+			</p:panel>
+
+			<p:panel id="pnlDistribucion" style="border:0px;"
+				visible="#{controladorPlantillaDist.flgDistribucion}"
+				toggleable="true">
+				<h:panelGrid columns="4" cellpadding="1">
+					<h:outputLabel value="Centro de Origen: " />
+					<p:inputText id="idCentroOriginal"
+						value="#{controladorPlantillaDist.centroOrigen}"
+						style="text-transform: uppercase" />
+					<h:outputLabel value="Almacen de Origen: " />
+					<p:inputText id="idAlmacenOriginal"
+						value="#{controladorPlantillaDist.almacenOrigen}"
+						style="text-transform: uppercase" />
+				</h:panelGrid>
+			</p:panel>
+
+			<p:panel id="pnlCreacionOcaPar" style="border:0px;"
+				visible="#{controladorPlantillaDist.flagCreacionOcaPar}"
+				toggleable="true">
+				<h:panelGrid columns="4" cellpadding="1">
+					<h:outputLabel value="Centro: " />
+					<p:inputText id="idCentroOca"
+						value="#{controladorPlantillaDist.centroOca}" />
+					<h:outputLabel value="Almacen: " />
+					<p:inputText id="idAlmacenOca"
+						value="#{controladorPlantillaDist.almacenOca}" />
+				</h:panelGrid>
+			</p:panel>
+
+			<p:panel id="panelOpcionPlantillaOcIntercompany" style="border:0px;"
+				visible="#{controladorPlantillaDist.flagOpcionPlantillaOcIntercompany}"
+				toggleable="true">
+				<h:panelGrid columns="2" cellpadding="3">
+					<h:outputLabel value="Centro: " />
+					<p:inputText id="idCentroIntercompany"
+						value="#{controladorPlantillaDist.centroIntercompany}" />
+					<h:outputLabel value="Almacen: " />
+					<p:inputText id="idAlmacenIntercompany"
+						value="#{controladorPlantillaDist.almacenIntercompany}" />
+					<h:outputText value="Almacen Emisor:" />
+					<p:inputText id="idAlmacenEmisorIntercompany"
+						value="#{controladorPlantillaDist.almacenEmisorIntercompany}"></p:inputText>
+				</h:panelGrid>
+			</p:panel>
+
+			<p:commandButton value="Leer Excel"
+				actionListener="#{controladorPlantillaDist.leerArchivo}"
+				process="@this,frm:menu,frm:menuConcepto,frm:idCentroOriginal,frm:idAlmacenOriginal
+				,frm:idCentroOca,frm:idAlmacenOca,frm:idOpcionPlantOci,frm:idCentroOci,frm:idAlmacenOci,frm:idContratoOci
+				,frm:idOpcionDistribucionOci,frm:idCentroIntercompany
+				,frm:idAlmacenIntercompany,frm:idAlmacenEmisorIntercompany"
+				update="@this,frm:tbl,frm:panel1,frm:tbl1,frm:panel2,frm:panel3,frm:tblPlanOca,frm:panelPlanOca,frm:panelAmpliacion" />
+
+			<p:panel header="Exportar Datos" id="panel1"
+				visible="#{controladorPlantillaDist.flgProc2}" toggleable="true">
+				<h:commandLink>
+					<p:graphicImage value="/imagenes/excel.png" width="24" />
+					<p:dataExporter type="xls" target="tbl" fileName="reporte" />
+				</h:commandLink>
+				<p:dataTable id="tbl" var="var"
+					value="#{controladorPlantillaDist.lstPlantillaDatosBasicos}"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+					paginator="true" rows="5"
+					style="font-family:Verdana; font-size: 12px;" scrollable="true"
+					scrollWidth="1200">
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Agrup Modelo" />
+						</f:facet>
+						<h:outputText value="#{var.modelo.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Modelo SKU" />
+						</f:facet>
+						<h:outputText value="#{var.modelo.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Descripción del Modelo" />
+						</f:facet>
+						<h:outputText value="#{var.descrip_modelo.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Actividad" />
+						</f:facet>
+						<h:outputText value="#{var.actividad.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Género" />
+						</f:facet>
+						<h:outputText value="#{var.genero.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Edades" />
+						</f:facet>
+						<h:outputText value="#{var.edad.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Línea" />
+						</f:facet>
+						<h:outputText value="#{var.linea.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Temporada" />
+						</f:facet>
+						<h:outputText value="#{var.temporada.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Año Sesión" />
+						</f:facet>
+						<h:outputText value="#{var.ano.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Marca" />
+						</f:facet>
+						<h:outputText value="#{var.marca.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Equipo" />
+						</f:facet>
+						<h:outputText value="#{var.equipo.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Sub Division de Equipo" />
+						</f:facet>
+						<h:outputText value="#{var.sub_div_equipo.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Licencia" />
+						</f:facet>
+						<h:outputText value="#{var.licencia.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Clasificación" />
+						</f:facet>
+						<h:outputText value="#{var.clasificacion.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Familia" />
+						</f:facet>
+						<h:outputText value="#{var.familia.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="% Regalia" />
+						</f:facet>
+						<h:outputText value="" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Sub Division de Negocio" />
+						</f:facet>
+						<h:outputText value="#{var.sub_div_negocio.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Altura de Caña" />
+						</f:facet>
+						<h:outputText value="#{var.altura_cana.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Tallas" />
+						</f:facet>
+						<h:outputText value="#{var.tallas.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Color" />
+						</f:facet>
+						<h:outputText value="#{var.color.trim()}" />
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+
+			<p:panel header="Exportar Datos" id="panel2"
+				visible="#{controladorPlantillaDist.flgProc1}" toggleable="true">
+				<h:commandLink>
+					<p:graphicImage value="/imagenes/excel.png" width="30" />
+					<p:dataExporter type="xls" target="tbl1" fileName="reporte1" />
+				</h:commandLink>
+				<p:dataTable id="tbl1" var="var"
+					value="#{controladorPlantillaDist.lstPlantillaSegProcesado}"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+					paginator="true" rows="5"
+					style="font-family:Verdana; font-size: 12px;" scrollable="true"
+					scrollWidth="1200">
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Embarque" />
+						</f:facet>
+						<h:outputText value="#{var.embarque}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Fecha estimada de llegada" />
+						</f:facet>
+						<h:outputText value="#{var.fecha_llegada.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Grupo" />
+						</f:facet>
+						<h:outputText value="#{var.grupo.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Línea" />
+						</f:facet>
+						<h:outputText value="#{var.linea.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Género" />
+						</f:facet>
+						<h:outputText value="#{var.genero.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Actividad" />
+						</f:facet>
+						<h:outputText value="#{var.actividad.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Categoria" />
+						</f:facet>
+						<h:outputText value="#{var.categoria.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Imagen" />
+						</f:facet>
+						<h:outputText value="#{var.imagen.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Código Sap" />
+						</f:facet>
+						<h:outputText value="#{var.codigo_sap.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Modelo(Sku)" />
+						</f:facet>
+						<h:outputText value="#{var.codigo.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Descripción del modelo" />
+						</f:facet>
+						<h:outputText value="#{var.descripcion.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Color" />
+						</f:facet>
+						<h:outputText value="#{var.color.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Tallas" />
+						</f:facet>
+						<h:outputText value="#{var.talla.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Carry Over" />
+						</f:facet>
+						<h:outputText value="#{var.carryover.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="P4/Costo" />
+						</f:facet>
+						<h:outputText value="#{var.p4.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="PvP con iva" />
+						</f:facet>
+						<h:outputText value="#{var.pvp.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Cantidad a distribuir" />
+						</f:facet>
+						<h:outputText value="#{var.cantidad_distribuir.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t1" />
+						</f:facet>
+						<h:outputText value="#{var.t1.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t2" />
+						</f:facet>
+						<h:outputText value="#{var.t2.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t3" />
+						</f:facet>
+						<h:outputText value="#{var.t3.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t4" />
+						</f:facet>
+						<h:outputText value="#{var.t4.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t5" />
+						</f:facet>
+						<h:outputText value="#{var.t5.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t6" />
+						</f:facet>
+						<h:outputText value="#{var.t6.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t7" />
+						</f:facet>
+						<h:outputText value="#{var.t7.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t8" />
+						</f:facet>
+						<h:outputText value="#{var.t8.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t9" />
+						</f:facet>
+						<h:outputText value="#{var.t9.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t10" />
+						</f:facet>
+						<h:outputText value="#{var.t10.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t11" />
+						</f:facet>
+						<h:outputText value="#{var.t11.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t12" />
+						</f:facet>
+						<h:outputText value="#{var.t12.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t13" />
+						</f:facet>
+						<h:outputText value="#{var.t13.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t14" />
+						</f:facet>
+						<h:outputText value="#{var.t14.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t15" />
+						</f:facet>
+						<h:outputText value="#{var.t15.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t16" />
+						</f:facet>
+						<h:outputText value="#{var.t16.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t17" />
+						</f:facet>
+						<h:outputText value="#{var.t17.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t18" />
+						</f:facet>
+						<h:outputText value="#{var.t18.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t19" />
+						</f:facet>
+						<h:outputText value="#{var.t19.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t20" />
+						</f:facet>
+						<h:outputText value="#{var.t20.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t21" />
+						</f:facet>
+						<h:outputText value="#{var.t21.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t22" />
+						</f:facet>
+						<h:outputText value="#{var.t22.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t23" />
+						</f:facet>
+						<h:outputText value="#{var.t23.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t24" />
+						</f:facet>
+						<h:outputText value="#{var.t24.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t25" />
+						</f:facet>
+						<h:outputText value="#{var.t25.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t26" />
+						</f:facet>
+						<h:outputText value="#{var.t26.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t27" />
+						</f:facet>
+						<h:outputText value="#{var.t27.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t28" />
+						</f:facet>
+						<h:outputText value="#{var.t28.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t29" />
+						</f:facet>
+						<h:outputText value="#{var.t29.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t30" />
+						</f:facet>
+						<h:outputText value="#{var.t30.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t31" />
+						</f:facet>
+						<h:outputText value="#{var.t31.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t32" />
+						</f:facet>
+						<h:outputText value="#{var.t32.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t33" />
+						</f:facet>
+						<h:outputText value="#{var.t33.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t34" />
+						</f:facet>
+						<h:outputText value="#{var.t34.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t35" />
+						</f:facet>
+						<h:outputText value="#{var.t35.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t36" />
+						</f:facet>
+						<h:outputText value="#{var.t36.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t37" />
+						</f:facet>
+						<h:outputText value="#{var.t37.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t38" />
+						</f:facet>
+						<h:outputText value="#{var.t38.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t39" />
+						</f:facet>
+						<h:outputText value="#{var.t39.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t40" />
+						</f:facet>
+						<h:outputText value="#{var.t40.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t41" />
+						</f:facet>
+						<h:outputText value="#{var.t41.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t42" />
+						</f:facet>
+						<h:outputText value="#{var.t42.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t43" />
+						</f:facet>
+						<h:outputText value="#{var.t43.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t44" />
+						</f:facet>
+						<h:outputText value="#{var.t44.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t45" />
+						</f:facet>
+						<h:outputText value="#{var.t45.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t46" />
+						</f:facet>
+						<h:outputText value="#{var.t46.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t47" />
+						</f:facet>
+						<h:outputText value="#{var.t47.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t48" />
+						</f:facet>
+						<h:outputText value="#{var.t48.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t49" />
+						</f:facet>
+						<h:outputText value="#{var.t49.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t50" />
+						</f:facet>
+						<h:outputText value="#{var.t50.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t51" />
+						</f:facet>
+						<h:outputText value="#{var.t51.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t52" />
+						</f:facet>
+						<h:outputText value="#{var.t52.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t53" />
+						</f:facet>
+						<h:outputText value="#{var.t53.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t54" />
+						</f:facet>
+						<h:outputText value="#{var.t54.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t55" />
+						</f:facet>
+						<h:outputText value="#{var.t55.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t56" />
+						</f:facet>
+						<h:outputText value="#{var.t56.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t57" />
+						</f:facet>
+						<h:outputText value="#{var.t57.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t58" />
+						</f:facet>
+						<h:outputText value="#{var.t58.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t59" />
+						</f:facet>
+						<h:outputText value="#{var.t59.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t60" />
+						</f:facet>
+						<h:outputText value="#{var.t60.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t61" />
+						</f:facet>
+						<h:outputText value="#{var.t61.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t62" />
+						</f:facet>
+						<h:outputText value="#{var.t62.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t63" />
+						</f:facet>
+						<h:outputText value="#{var.t63.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t64" />
+						</f:facet>
+						<h:outputText value="#{var.t64.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t65" />
+						</f:facet>
+						<h:outputText value="#{var.t65.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t66" />
+						</f:facet>
+						<h:outputText value="#{var.t66.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t67" />
+						</f:facet>
+						<h:outputText value="#{var.t67.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t68" />
+						</f:facet>
+						<h:outputText value="#{var.t68.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t69" />
+						</f:facet>
+						<h:outputText value="#{var.t69.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t70" />
+						</f:facet>
+						<h:outputText value="#{var.t70.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t71" />
+						</f:facet>
+						<h:outputText value="#{var.t71.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t72" />
+						</f:facet>
+						<h:outputText value="#{var.t72.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t73" />
+						</f:facet>
+						<h:outputText value="#{var.t73.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t74" />
+						</f:facet>
+						<h:outputText value="#{var.t74.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t75" />
+						</f:facet>
+						<h:outputText value="#{var.t75.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t76" />
+						</f:facet>
+						<h:outputText value="#{var.t76.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t77" />
+						</f:facet>
+						<h:outputText value="#{var.t77.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t78" />
+						</f:facet>
+						<h:outputText value="#{var.t78.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t79" />
+						</f:facet>
+						<h:outputText value="#{var.t79.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t80" />
+						</f:facet>
+						<h:outputText value="#{var.t80.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t81" />
+						</f:facet>
+						<h:outputText value="#{var.t81.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t82" />
+						</f:facet>
+						<h:outputText value="#{var.t82.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t83" />
+						</f:facet>
+						<h:outputText value="#{var.t83.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t84" />
+						</f:facet>
+						<h:outputText value="#{var.t84.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t85" />
+						</f:facet>
+						<h:outputText value="#{var.t85.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t86" />
+						</f:facet>
+						<h:outputText value="#{var.t86.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t87" />
+						</f:facet>
+						<h:outputText value="#{var.t87.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t88" />
+						</f:facet>
+						<h:outputText value="#{var.t88.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t89" />
+						</f:facet>
+						<h:outputText value="#{var.t89.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t90" />
+						</f:facet>
+						<h:outputText value="#{var.t90.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t91" />
+						</f:facet>
+						<h:outputText value="#{var.t91.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t92" />
+						</f:facet>
+						<h:outputText value="#{var.t92.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t93" />
+						</f:facet>
+						<h:outputText value="#{var.t93.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t94" />
+						</f:facet>
+						<h:outputText value="#{var.t94.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t95" />
+						</f:facet>
+						<h:outputText value="#{var.t95.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t96" />
+						</f:facet>
+						<h:outputText value="#{var.t96.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t97" />
+						</f:facet>
+						<h:outputText value="#{var.t97.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t98" />
+						</f:facet>
+						<h:outputText value="#{var.t98.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t99" />
+						</f:facet>
+						<h:outputText value="#{var.t99.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="t100" />
+						</f:facet>
+						<h:outputText value="#{var.t100.trim()}" />
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+
+			<p:panel header="Exportar Datos" id="panel3"
+				visible="#{controladorPlantillaDist.flgProc3}" toggleable="true">
+				<h:commandLink>
+					<p:graphicImage value="/imagenes/excel.png" width="24" />
+					<p:dataExporter type="xls" target="tbl3"
+						fileName="PlantillaDistribucionSAP" />
+				</h:commandLink>
+				<p:dataTable id="tbl3" var="var"
+					value="#{controladorPlantillaDist.lstPlantillaDistribucionSap}"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+					paginator="true" rows="5"
+					style="font-family:Verdana; font-size: 12px;" scrollable="true"
+					scrollWidth="1200">
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Posición" />
+						</f:facet>
+						<h:outputText value="#{var.posicion.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Material" />
+						</f:facet>
+						<h:outputText value="#{var.material.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Centro Origen" />
+						</f:facet>
+						<h:outputText value="#{var.centro_origen.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Almacen Origen" />
+						</f:facet>
+						<h:outputText value="#{var.almacen_origen.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Centro Destino" />
+						</f:facet>
+						<h:outputText value="#{var.centro_destino.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Almacen Destino" />
+						</f:facet>
+						<h:outputText value="#{var.almacen_destino.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Cantidad" />
+						</f:facet>
+						<h:outputText value="#{var.cantidad.trim()}" />
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+
+			<p:panel header="Exportar Datos" id="panelPlanOca"
+				visible="#{controladorPlantillaDist.flgComAgruPro}"
+				toggleable="true">
+				<h:commandLink>
+					<p:graphicImage value="/imagenes/excel.png" width="24" />
+					<p:dataExporter type="xls" target="tblPlanOca"
+						fileName="reporteOca" />
+				</h:commandLink>
+				<p:dataTable id="tblPlanOca" var="var"
+					value="#{controladorPlantillaDist.lstCompraAgrupadaProcesada}"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+					paginator="true" rows="20"
+					style="font-family:Verdana; font-size: 12px;" scrollable="true"
+					scrollWidth="1200">
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="TIPO REGISTRO" />
+						</f:facet>
+						<h:outputText value="#{var.tipo_registro.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="CLASE ORDEN/PEDIDO ABIERTO" />
+						</f:facet>
+						<h:outputText value="#{var.clase_orden.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="PROVEEDOR" />
+						</f:facet>
+						<h:outputText value="#{var.proveedor.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="MONEDA" />
+						</f:facet>
+						<h:outputText value="#{var.moneda.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="SOCIEDAD" />
+						</f:facet>
+						<h:outputText value="#{var.sociedad.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="ORG. DE COMPRAS" />
+						</f:facet>
+						<h:outputText value="#{var.org_compras.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="GRUPO DE COMPRAS" />
+						</f:facet>
+						<h:outputText value="#{var.grupo_compras.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="PUERTO DE EMBARQUE" />
+						</f:facet>
+						<h:outputText value="#{var.puerto_embarque.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="CONDICION DE PAGO" />
+						</f:facet>
+						<h:outputText value="#{var.condicion_pago.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="CREADO POR" />
+						</f:facet>
+						<h:outputText value="#{var.creado_por.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="INICIO PER.VALIDEZ" />
+						</f:facet>
+						<h:outputText value="#{var.inicio_validez.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="FIN PER.VALIDEZ" />
+						</f:facet>
+						<h:outputText value="#{var.fin_validez.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="MATERIAL" />
+						</f:facet>
+						<h:outputText value="#{var.material.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="CANTIDAD" />
+						</f:facet>
+						<h:outputText value="#{var.cantidad.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="PRECIO" />
+						</f:facet>
+						<h:outputText value="#{var.precio.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="CENTRO" />
+						</f:facet>
+						<h:outputText value="#{var.centro.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="ALMACEN" />
+						</f:facet>
+						<h:outputText value="#{var.almacen.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="ALMACEN EMISOR" />
+						</f:facet>
+						<h:outputText value="#{var.almacen_emisor.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="CONTRATO/PEDIDO ABIERTO" />
+						</f:facet>
+						<h:outputText value="#{var.contrato.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="POSICION" />
+						</f:facet>
+						<h:outputText value="#{var.posicion.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="CONDICIÓN" />
+						</f:facet>
+						<h:outputText value="#{var.condicion.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="VALOR DE CONDICION" />
+						</f:facet>
+						<h:outputText value="#{var.valor_condicion.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="FECHA DE ENTREGA" />
+						</f:facet>
+						<h:outputText value="#{var.fecha_entrega.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="N. PROFORMA INVOCE" />
+						</f:facet>
+						<h:outputText value="#{var.num_proforma.trim()}" />
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+
+			<p:panel header="Exportar Datos" id="panelDistribucionOca"
+				visible="#{controladorPlantillaDist.flgDistribucionOca}"
+				toggleable="true">
+				<h:commandLink>
+					<p:graphicImage value="/imagenes/excel.png" width="24" />
+					<p:dataExporter type="xls" target="tblDistribucionOca"
+						fileName="DistribucionOca" />
+				</h:commandLink>
+				<p:dataTable id="tblDistribucionOca" var="var"
+					value="#{controladorPlantillaDist.lstDistribucionOca}"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+					paginator="true" rows="20"
+					style="font-family:Verdana; font-size: 12px;" scrollable="true"
+					scrollWidth="1200">
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Posición" />
+						</f:facet>
+						<h:outputText value="#{var.posicion.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Material" />
+						</f:facet>
+						<h:outputText value="#{var.material.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Centro Origen" />
+						</f:facet>
+						<h:outputText value="#{var.centro_origen.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Almacen Origen" />
+						</f:facet>
+						<h:outputText value="#{var.almacen_origen.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Centro Destino" />
+						</f:facet>
+						<h:outputText value="#{var.centro_destino.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Almacen Destino" />
+						</f:facet>
+						<h:outputText value="#{var.almacen_destino.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Cantidad" />
+						</f:facet>
+						<h:outputText value="#{var.cantidad.trim()}" />
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+
+			<p:panel header="Exportar Datos" id="panelPlanOci1"
+				visible="#{controladorPlantillaDist.flagOpcionPlantOci}"
+				toggleable="true">
+				<h:commandLink>
+					<p:graphicImage value="/imagenes/excel.png" width="24" />
+					<p:dataExporter type="xls" target="tblPlanOci1"
+						fileName="reporteOci" />
+				</h:commandLink>
+				<p:dataTable id="tblPlanOci1" var="var"
+					value="#{controladorPlantillaDist.lstPlantillaOci}"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+					paginator="true" rows="15"
+					style="font-family:Verdana; font-size: 12px;" scrollable="true"
+					scrollWidth="1200">
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="TIPO REGISTRO" />
+						</f:facet>
+						<h:outputText value="#{var.tipo_registro.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="CLASE ORDEN/PEDIDO ABIERTO" />
+						</f:facet>
+						<h:outputText value="#{var.clase_orden.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="PROVEEDOR" />
+						</f:facet>
+						<h:outputText value="#{var.proveedor.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="MONEDA" />
+						</f:facet>
+						<h:outputText value="#{var.moneda.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="SOCIEDAD" />
+						</f:facet>
+						<h:outputText value="#{var.sociedad.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="ORG. DE COMPRAS" />
+						</f:facet>
+						<h:outputText value="#{var.org_compras.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="GRUPO DE COMPRAS" />
+						</f:facet>
+						<h:outputText value="#{var.grupo_compras.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="PUERTO DE EMBARQUE" />
+						</f:facet>
+						<h:outputText value="#{var.puerto_embarque.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="CONDICION DE PAGO" />
+						</f:facet>
+						<h:outputText value="#{var.condicion_pago.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="CREADO POR" />
+						</f:facet>
+						<h:outputText value="#{var.creado_por.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="INICIO PER.VALIDEZ" />
+						</f:facet>
+						<h:outputText value="#{var.inicio_validez.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="FIN PER.VALIDEZ" />
+						</f:facet>
+						<h:outputText value="#{var.fin_validez.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="MATERIAL" />
+						</f:facet>
+						<h:outputText value="#{var.material.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="CANTIDAD" />
+						</f:facet>
+						<h:outputText value="#{var.cantidad.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="PRECIO" />
+						</f:facet>
+						<h:outputText value="#{var.precio.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="CENTRO" />
+						</f:facet>
+						<h:outputText value="#{var.centro.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="ALMACEN" />
+						</f:facet>
+						<h:outputText value="#{var.almacen.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="ALMACEN EMISOR" />
+						</f:facet>
+						<h:outputText value="#{var.almacen_emisor.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="CONTRATO/PEDIDO ABIERTO" />
+						</f:facet>
+						<h:outputText value="#{var.contrato.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="POSICION" />
+						</f:facet>
+						<h:outputText value="#{var.posicion.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="CONDICIÓN" />
+						</f:facet>
+						<h:outputText value="#{var.condicion.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="VALOR DE CONDICION" />
+						</f:facet>
+						<h:outputText value="#{var.valor_condicion.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="FECHA DE ENTREGA" />
+						</f:facet>
+						<h:outputText value="#{var.fecha_entrega.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="N. PROFORMA INVOCE" />
+						</f:facet>
+						<h:outputText value="#{var.num_proforma.trim()}" />
+					</p:column>
+					<p:column style="width:80px"
+						rendered="#{controladorPlantillaDist.flagFactura}">
+						<f:facet name="header">
+							<h:outputText value="FACTURA" />
+						</f:facet>
+						<h:outputText value="#{var.factura.trim()}" />
+					</p:column>
+					<p:column style="width:80px"
+						rendered="#{controladorPlantillaDist.flagFechaFactura}">
+						<f:facet name="header">
+							<h:outputText value="FECHA FACTURA" />
+						</f:facet>
+						<h:outputText value="#{var.fecha_factura.trim()}" />
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+
+			<p:panel header="Exportar Datos" id="panelDistribucionOci"
+				visible="#{controladorPlantillaDist.flgDistribucionOci}"
+				toggleable="true">
+				<h:commandLink>
+					<p:graphicImage value="/imagenes/excel.png" width="24" />
+					<p:dataExporter type="xls" target="tblDistribucionOci"
+						fileName="DistribucionOci" />
+				</h:commandLink>
+				<p:dataTable id="tblDistribucionOci" var="var"
+					value="#{controladorPlantillaDist.lstDistribucionOci}"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+					paginator="true" rows="15"
+					style="font-family:Verdana; font-size: 12px;" scrollable="true"
+					scrollWidth="1200">
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Posición" />
+						</f:facet>
+						<h:outputText value="#{var.posicion.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Material" />
+						</f:facet>
+						<h:outputText value="#{var.material.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Centro Origen" />
+						</f:facet>
+						<h:outputText value="#{var.centro_origen.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Almacen Origen" />
+						</f:facet>
+						<h:outputText value="#{var.almacen_origen.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Centro Destino" />
+						</f:facet>
+						<h:outputText value="#{var.centro_destino.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Almacen Destino" />
+						</f:facet>
+						<h:outputText value="#{var.almacen_destino.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Cantidad" />
+						</f:facet>
+						<h:outputText value="#{var.cantidad.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px"
+						rendered="#{controladorPlantillaDist.flagFactura}">
+						<f:facet name="header">
+							<h:outputText value="Número factura" />
+						</f:facet>
+						<h:outputText value="#{var.num_factura.trim()}" />
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+
+			<p:panel header="Exportar Datos" id="panelPlanOcIntercompany"
+				visible="#{controladorPlantillaDist.flgProPlanOcIntercompany}"
+				toggleable="true">
+				<h:commandLink>
+					<p:graphicImage value="/imagenes/excel.png" width="24" />
+					<p:dataExporter type="xls" target="tblPlanOciIntercompany"
+						fileName="reporteOcIntercompany" />
+				</h:commandLink>
+
+				<p:dataTable id="tblPlanOciIntercompany" var="var"
+					value="#{controladorPlantillaDist.lstPlantillaOcIntercompany}"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+					paginator="true" rows="15"
+					style="font-family:Verdana; font-size: 12px;" scrollable="true"
+					scrollWidth="1200">
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="TIPO REGISTRO" />
+						</f:facet>
+						<h:outputText value="" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="CLASE ORDEN/PEDIDO ABIERTO" />
+						</f:facet>
+						<h:outputText value="" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="PROVEEDOR" />
+						</f:facet>
+						<h:outputText value="" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="MONEDA" />
+						</f:facet>
+						<h:outputText value="" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="SOCIEDAD" />
+						</f:facet>
+						<h:outputText value="" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="ORG. DE COMPRAS" />
+						</f:facet>
+						<h:outputText value="" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="GRUPO DE COMPRAS" />
+						</f:facet>
+						<h:outputText value="" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="PUERTO DE EMBARQUE" />
+						</f:facet>
+						<h:outputText value="" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="CONDICION DE PAGO" />
+						</f:facet>
+						<h:outputText value="" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="CREADO POR" />
+						</f:facet>
+						<h:outputText value="" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="INICIO PER.VALIDEZ" />
+						</f:facet>
+						<h:outputText value="" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="FIN PER.VALIDEZ" />
+						</f:facet>
+						<h:outputText value="" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="MATERIAL" />
+						</f:facet>
+						<h:outputText value="#{var.material.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="CANTIDAD" />
+						</f:facet>
+						<h:outputText value="#{var.cantidad.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="PRECIO" />
+						</f:facet>
+						<h:outputText value="" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="CENTRO" />
+						</f:facet>
+						<h:outputText value="#{var.centro.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="ALMACEN" />
+						</f:facet>
+						<h:outputText value="#{var.almacen.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="ALMACEN EMISOR" />
+						</f:facet>
+						<h:outputText value="#{var.almacen_emisor.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="CONTRATO/PEDIDO ABIERTO" />
+						</f:facet>
+						<h:outputText value="" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="POSICION" />
+						</f:facet>
+						<h:outputText value="" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="CONDICIÓN" />
+						</f:facet>
+						<h:outputText value="" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="VALOR DE CONDICION" />
+						</f:facet>
+						<h:outputText value="" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="FECHA DE ENTREGA" />
+						</f:facet>
+						<h:outputText value="#{var.fecha_entrega.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="N. PROFORMA INVOCE" />
+						</f:facet>
+						<h:outputText value="" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="MODELO" />
+						</f:facet>
+						<h:outputText value="#{var.modelo.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="DESCRIPCION" />
+						</f:facet>
+						<h:outputText value="#{var.descripcion.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="TALLA" />
+						</f:facet>
+						<h:outputText value="#{var.talla.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="CONCEPTO" />
+						</f:facet>
+						<h:outputText value="#{var.concepto.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="GRUPO" />
+						</f:facet>
+						<h:outputText value="#{var.grupo.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="GENERO" />
+						</f:facet>
+						<h:outputText value="#{var.genero.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="LINEA" />
+						</f:facet>
+						<h:outputText value="" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="ACTIVIDAD" />
+						</f:facet>
+						<h:outputText value="#{var.actividad.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="P4" />
+						</f:facet>
+						<h:outputText value="#{var.p4.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="PVP" />
+						</f:facet>
+						<h:outputText value="#{var.pvp.trim()}" />
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+
+			<p:panel header="Exportar Datos" id="panelDistribucionOcIntercompany"
+				visible="#{controladorPlantillaDist.flgPanelDistribucionOcIntercompany}"
+				toggleable="true">
+				<h:commandLink>
+					<p:graphicImage value="/imagenes/excel.png" width="24" />
+					<p:dataExporter type="xls" target="tblDistribucionOcIntercompany"
+						fileName="DistribucionOcIntercompany" />
+				</h:commandLink>
+				<p:dataTable id="tblDistribucionOcIntercompany" var="var"
+					value="#{controladorPlantillaDist.lstDistribucionOcIntercompany}"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+					paginator="true" rows="15"
+					style="font-family:Verdana; font-size: 12px;" scrollable="true"
+					scrollWidth="1200">
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Posición" />
+						</f:facet>
+						<h:outputText value="#{var.posicion.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Material" />
+						</f:facet>
+						<h:outputText value="#{var.material.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Centro Origen" />
+						</f:facet>
+						<h:outputText value="#{var.centro_origen.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Almacen Origen" />
+						</f:facet>
+						<h:outputText value="#{var.almacen_origen.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Centro Destino" />
+						</f:facet>
+						<h:outputText value="#{var.centro_destino.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Almacen Destino" />
+						</f:facet>
+						<h:outputText value="#{var.almacen_destino.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="Cantidad" />
+						</f:facet>
+						<h:outputText value="#{var.cantidad.trim()}" />
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+
+			<p:panel header="Exportar Datos" id="panelAmpliacion"
+				visible="#{controladorPlantillaDist.flgAmpliacion}"
+				toggleable="true">
+				<p:commandButton value="PARTIR ARCHIVO"
+					actionListener="#{controladorPlantillaDist.partirArchivo}"
+					process="@this" update="@this" />
+				<h:commandLink>
+					<p:graphicImage value="/imagenes/excel.png" width="24" />
+					<p:dataExporter type="csv" target="tblPlanAmpliacion"
+						fileName="Plantilla_De_Ampliacion" />
+				</h:commandLink>
+				<p:dataTable id="tblPlanAmpliacion" var="var"
+					value="#{controladorPlantillaDist.lstPlantillaAmpliacion}"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+					paginator="true" rows="20"
+					style="font-family:Verdana; font-size: 12px;" scrollable="true"
+					scrollWidth="1200">
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="MATERIAL" />
+						</f:facet>
+						<h:outputText value="#{var.material.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="CENTRO" />
+						</f:facet>
+						<h:outputText value="#{var.centro.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="ALMACEN" />
+						</f:facet>
+						<h:outputText value="#{var.almacen.trim()}" />
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+
+			<p:panel header="Exportar Datos" id="panelPlantillaMcu"
+				visible="#{controladorPlantillaDist.flagPanelPlantillaMcu}"
+				toggleable="true">
+				<h:commandLink>
+					<p:graphicImage value="/imagenes/excel.png" width="24" />
+					<p:dataExporter type="xls" target="tblPlanMcu"
+						fileName="Plantilla_mcu" />
+				</h:commandLink>
+				<p:dataTable id="tblPlanMcu" var="var"
+					value="#{controladorPlantillaDist.lstPlantillaMcuView}"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+					paginator="true" rows="20"
+					style="font-family:Verdana; font-size: 12px;" scrollable="true"
+					scrollWidth="1200">
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="CODIGO" />
+						</f:facet>
+						<h:outputText value="#{var.codigo.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="DETALLE" />
+						</f:facet>
+						<h:outputText value="#{var.detalle.trim()}" />
+					</p:column>
+
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="COLOR" />
+						</f:facet>
+						<h:outputText value="#{var.color.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="FECHAENTREGA" />
+						</f:facet>
+						<h:outputText value="#{var.fecha_entrega.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="TALLA" />
+						</f:facet>
+						<h:outputText value="#{var.talla.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="ALMACEN" />
+						</f:facet>
+						<h:outputText value="#{var.almacen.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="CANTIDAD" />
+						</f:facet>
+						<h:outputText value="#{var.cantidad.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="CONCEPTO" />
+						</f:facet>
+						<h:outputText value="#{var.concepto.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="SCURVA" />
+						</f:facet>
+						<h:outputText value="#{var.scurva.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="CCURVA" />
+						</f:facet>
+						<h:outputText value="#{var.ccurva.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="PROVEEDOR" />
+						</f:facet>
+						<h:outputText value="#{var.proveedor.trim()}" />
+					</p:column>
+					<p:column style="width:80px">
+						<f:facet name="header">
+							<h:outputText value="CENTRO" />
+						</f:facet>
+						<h:outputText value="#{var.centro.trim()}" />
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+
+
+		</h:form>
+	</ui:define>
+	<ui:define name="tituloFormulario">Transformador Plantillas SAP</ui:define>
+</ui:composition>
+</html>
